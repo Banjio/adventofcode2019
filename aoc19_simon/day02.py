@@ -57,4 +57,4 @@ if result2 is not None:
     correct = aoc.submit(result2, day, 2)
     print(f'Answer 2 correct: {correct}')
 else:
-    print('No valid input found for given output!')
+    print('No valid input.txt found for given output!')

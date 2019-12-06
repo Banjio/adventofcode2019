@@ -19,7 +19,7 @@ def _get_filename(day: int) -> str:
     return os.path.join(DATADIR, f'day_{day:02}.txt')
 
 
-def _get_url(day: int, suffix: str = 'input') -> str:
+def _get_url(day: int, suffix: str = 'input.txt') -> str:
     return f'{AOC_URL}/{year}/day/{day}/{suffix}'
 
 
