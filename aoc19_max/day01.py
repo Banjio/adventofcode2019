@@ -43,11 +43,12 @@ if __name__ == "__main__":
     day = get_day_from_file(str(__file__))
     input_path = get_input_by_day(day, DATADIR)
     data_as_list = data_to_list(input_path)
+    # List still needs to be parsed a lttle
+    data_as_list = [int(item) for item in data_as_list]
     print("The fuel needed for all modules is: ", fuel_sum(data_as_list, fuel_per_module))
     # ------------ PART 2 ------------------
-    day = get_day_from_file(str(__file__))
-    input_path = get_input_by_day(day, DATADIR)
-    data_as_list = data_to_list(input_path)
+    # Input is the same as for Part 1
     print("The fuel needed for all modules is: ", fuel_sum(data_as_list, fuel_per_module_accounting_fuel))
+    # ------------ PLACEHOLDER FOR SIMONS VERSION ---------------
     # Thanks to functions provided by Simon we can use this
-    #aoc.
+

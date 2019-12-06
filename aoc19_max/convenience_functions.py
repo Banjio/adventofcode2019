@@ -9,10 +9,10 @@ def data_to_list(stream) -> list:
     :param stream: every type that can be openend with builtin open
     :return: List with one item = one line in stream
     """
-    data_list = list()
+
     with open(stream, "r") as s:
-        for line in s.readlines():
-            data_list.append(int(line))
+        content = s.read()
+        data_list = content.splitlines()
     return data_list
 
 def get_day_from_file(filename: str) -> str :
