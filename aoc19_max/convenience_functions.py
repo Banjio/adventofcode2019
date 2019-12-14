@@ -2,6 +2,7 @@ import re
 import os
 import glob
 import pathlib
+import time
 
 def data_to_list(stream) -> list:
     """
@@ -32,5 +33,18 @@ def get_input_by_day(day:str, datadir:str) -> pathlib.Path:
     :param datadir: directory where the files can be found
     :return: Filepath of the file
     """
+    assert os.path.isdir(datadir), f"{datadir} is no known directory"
     filename = glob.glob1(datadir, f"*_day_{day}*")[0]
     return pathlib.Path(datadir, filename)
+
+def timer(func):
+    """
+    Wrapper for a function that a returns a result by
+    https://github.com/Dementophobia/advent-of-code-2019/blob/master/aoc.py
+    """
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        print(f"\nTime required: {(time.time() - start_time)*1000:.2f} ms\n")
+        return result
+    return wrapper

@@ -1,32 +1,11 @@
-import numpy as np
 import re
+from typing import List, Tuple
+from aoc19_max.convenience_functions import data_to_list, get_day_from_file, get_input_by_day, timer
+from config import DATADIR
 
 
-# TODO: Stimmt noch nicht hanz weil bei
-def update_matrix(direction, steps, matrix, cur_row, cur_col):
-    assert direction in ["R", "L", "U", "D"]
-
-    if "R" in direction:
-        matrix[cur_row, cur_col:cur_col+steps+1] = 1
-        new_row = cur_row
-        new_col = cur_col + steps
-
-    elif "L" in direction:
-        matrix[cur_row, cur_col-steps:cur_col+1] = 1
-        new_row = cur_row
-        new_col = cur_col - steps
-
-    elif "U" in direction:
-        matrix[cur_row-steps:cur_row+1, cur_col] = 1
-        new_row = cur_row - steps
-        new_col = cur_col
-
-    elif "D" in direction:
-        matrix[cur_row:cur_row+steps+1, cur_col] = 1
-        new_row = cur_row + steps
-        new_col = cur_col
-
-    return matrix, new_row, new_col
+def calc_manhattan_dist(orig: Tuple[int], point: Tuple[int]):
+    return abs(orig[0] - point[0]) + abs(orig[1] - point[1])
 
 
 def parse_directions(inp: str):
@@ -36,36 +15,47 @@ def parse_directions(inp: str):
     return direction, steps
 
 
-def get_matrix_one_path(inputs:list):
-    x, y = 500, 500
-    cur_row, cur_col = int(x/2), int(y/2)
-    matrix = np.zeros((x,y))
-    for inp in inputs:
-        direction, steps = parse_directions(inp)
-        matrix, cur_row, cur_col = update_matrix(direction, steps, matrix, cur_row, cur_col)
-    return matrix
+def get_positions(wire:List[str]):
+    x, y = 0, 0
+    positions = set()
 
+    for elem in wire:
+        direction, step = parse_directions(elem)
+        for i in range(int(step)):
+            if direction == "R":
+                x += 1
+            elif direction == "L":
+                x -= 1
+            elif direction == "U":
+                y -= 1
+            elif direction == "D":
+                y += 1
+            positions.add((x, y))
 
-def calc_manhattan_dist(orig, point):
-    return abs(orig[0] - point[0]) + abs(orig[1] - point[1])
+    return positions
 
+def get_min_dist(intersections: set, orig: tuple):
+    min_dist = 10e10
+    for elem in intersections:
+        temp_dist = calc_manhattan_dist(orig, elem)
+        if temp_dist >= min_dist:
+            continue
+        else:
+            min_dist = temp_dist
+    return min_dist
 
-def get_results(intersection_matrix, origin):
-    intersections = np.where(intersection_matrix == 2)
-    distances = list()
-    if np.ndim(intersections) == 2:
-        return intersections
-    else:
-        dist = list()
-        for intersection in intersections:
+@timer
+def get_results():
+    day = get_day_from_file(str(__file__))
+    input_path = get_input_by_day(day, DATADIR)
+    data_as_list = data_to_list(input_path)
+    directions1 = data_as_list[0].split(",")
+    directions2 = data_as_list[1].split(",")
+    path1 = get_positions(directions1)
+    path2 = get_positions(directions2)
+    intersections = path1.intersection(path2)
+    result = get_min_dist(intersections, (0, 0))
+    return result
 
-
-
-test_inp = ["R95", "U150", "L200", "D50"]
-test_inp2 = ["L99", "D104", "R200", "U50"]
-matrix = get_matrix_one_path(test_inp)
-matrix2 = get_matrix_one_path(test_inp2)
-intersection_matrix = matrix + matrix2
-intersection_matrix[250, 249] += 1
-intersection_matrix[250, 250] = 1
-get_results(intersection_matrix, (250, 250))
+if __name__ == "__main__":
+    print(f"The closest point to the central port has a distance of: ", get_results())
